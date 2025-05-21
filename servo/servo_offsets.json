@@ -1,0 +1,32 @@
+[
+    {
+        "coxa": 20,
+        "femur": 0,
+        "tibia": 0
+    },
+    {
+        "coxa": 8,
+        "femur": -13,
+        "tibia": 4
+    },
+    {
+        "coxa": -20,
+        "femur": -20,
+        "tibia": -3
+    },
+    {
+        "coxa": -20,
+        "femur": 11,
+        "tibia": 5
+    },
+    {
+        "coxa": 14,
+        "femur": 10,
+        "tibia": 10
+    },
+    {
+        "coxa": 20,
+        "femur": 15,
+        "tibia": 5
+    }
+]
