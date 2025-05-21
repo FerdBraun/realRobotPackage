@@ -1,0 +1,203 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro"  name="INSECTOIDv1">
+    <xacro:include filename="patterns.xacro"/>
+    <!--<xacro:include filename="example_gazebo.xacro" />-->
+    <!--<xacro:include filename="ros2_control.xacro"/>-->
+    <!--<xacro:include filename="lidar.xacro"/>-->
+    
+    
+    
+
+
+    <!---->
+	<link name="base_link"></link> 
+    
+    <!--BODY -->
+     <joint name="base_footprint_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="base_footprint"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+	<joint name="base_joint" type="fixed">
+		<origin xyz="0 0 0.01 " />
+		<parent link="base_link" />
+		<child link="robot_link" />
+	</joint>
+   
+   
+
+    <link name="base_footprint">
+    </link>
+	<link name="robot_link">
+		<visual>
+			<origin xyz="0 0 0" rpy="0 0 ${pi/2}"/>
+			<geometry>
+				<mesh filename="${base_path}"/>
+			</geometry>
+			<material name="green">
+				<color rgba="0.2 1 0.2 1"/>
+			</material>
+		</visual>
+		<xacro:inertial_box mass="3.0" x="0.2" y="0.45" z="0.06">
+            <origin xyz="0.0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_box>
+	</link>
+    <!---->
+    <!--CAMERA-->
+    <joint name="camera_joint" type="fixed">
+        <origin xyz="0 0.15 0.1" rpy="0 0 ${pi/2}"/>
+        <parent link="robot_link"/>
+        <child link="camera_link"/>        
+    </joint>
+    <!-- camera_link describes the camera -->
+   
+    <link name="camera_link">
+        <visual>
+            <origin xyz="-0.03 0 0" rpy="0 0 0"/>
+            <geometry>
+				<mesh filename="${camera}"/>
+			</geometry>
+        </visual>
+        <visual>
+            <origin xyz="-0.04 0 -0.04" rpy="0 0 0"/>
+            <geometry>
+                <cylinder length="0.06" radius="0.01" />
+            </geometry>
+            <material name="black" />
+        </visual>
+        <xacro:inertial_box mass="0.1" x="0.12" y="0.06" z="0.12">
+            <origin xyz="0.0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_box>
+    </link>
+
+
+    <!---->
+
+
+    <!---->
+
+
+    <xacro:leg_section_joint joint_name="LL-1-1" joint_axis="0 0 1" joint_xyz="0.07 -0.154663 0.06" joint_parent="robot_link" joint_child="LL-1-1_link" lower_limit="${-(pi/4)}" upper_limit="${pi/4}"  />
+
+    <xacro:leg_section_link link_name="LL-1-1_link" link_xyz="0.04 0 -0.04" link_rpy="0 ${-(pi/2)} 0" model="${arm_path_1}" />
+
+
+    <xacro:leg_section_joint joint_name="LL-1-2" joint_axis="0 1 0" joint_xyz="0.09 0 -0.04" joint_parent="LL-1-1_link" joint_child="LL-1-2_link" lower_limit="${-pi}" upper_limit="0"  />
+
+    <xacro:leg_section_link link_name="LL-1-2_link" link_xyz="0.02 0 -0.04" link_rpy="${-(pi/6)} 0 ${(pi/2)}" model="${arm_path_2}" />
+    
+
+
+    <xacro:leg_section_joint joint_name="LL-1-3" joint_axis="0 1 0" joint_xyz="0.04 0 -0.08" joint_parent="LL-1-2_link" joint_child="LL-1-3_link" lower_limit="${-pi/2}" upper_limit="1.51" />
+
+    <xacro:leg_section_link link_name="LL-1-3_link" link_xyz="0 0 -0.06" link_rpy="0 0 ${-pi/2}" model="${arm_path_3}"/>
+
+
+
+    <!--LEFT 2-nd-->
+
+
+    <xacro:leg_section_joint joint_name="LL-2-1" joint_axis="0 0 1" joint_xyz="0.07 -0.01 0.06" joint_parent="robot_link" joint_child="LL-2-1_link" lower_limit="${-pi/4}" upper_limit="${pi/4}" />
+
+    <xacro:leg_section_link link_name="LL-2-1_link" link_xyz="0.04 0 -0.04" link_rpy="0 ${-(pi/2)} 0" model="${arm_path_1}" />
+
+    
+
+    <xacro:leg_section_joint joint_name="LL-2-2" joint_axis="0 1 0" joint_xyz="0.09 0 -0.04" joint_parent="LL-2-1_link" joint_child="LL-2-2_link" lower_limit="${-pi}" upper_limit="0" />
+
+    <xacro:leg_section_link link_name="LL-2-2_link" link_xyz="0.02 0 -0.04" link_rpy="${(-pi/6)} 0 ${(pi/2)}" model="${arm_path_2}"/>
+    
+
+
+    <xacro:leg_section_joint joint_name="LL-2-3" joint_axis="0 1 0" joint_xyz="0.04 0 -0.08" joint_parent="LL-2-2_link" joint_child="LL-2-3_link" lower_limit="${-pi/2}" upper_limit="1.51"/>
+
+    <xacro:leg_section_link link_name="LL-2-3_link" link_xyz="0 0 -0.06" link_rpy="0 0 ${-pi/2}" model="${arm_path_3}"/>
+
+
+<!--LEFT 3-nd-->
+
+
+    <xacro:leg_section_joint joint_name="LL-3-1" joint_axis="0 0 1" joint_xyz="0.07 0.158646 0.06" joint_parent="robot_link" joint_child="LL-3-1_link" lower_limit="${-pi/4}" upper_limit="${pi/4}" />
+
+    <xacro:leg_section_link link_name="LL-3-1_link" link_xyz="0.04 0 -0.04" link_rpy="0 ${-(pi/2)} 0" model="${arm_path_1}"/>
+
+    
+
+    <xacro:leg_section_joint joint_name="LL-3-2" joint_axis="0 1 0" joint_xyz="0.09 0 -0.04" joint_parent="LL-3-1_link" joint_child="LL-3-2_link" lower_limit="${-pi}" upper_limit="0" />
+
+    <xacro:leg_section_link link_name="LL-3-2_link" link_xyz="0.02 0 -0.04" link_rpy="${(-pi/6)} 0 ${(pi/2)}" model="${arm_path_2}"/>
+    
+
+
+    <xacro:leg_section_joint joint_name="LL-3-3" joint_axis="0 1 0" joint_xyz="0.04 0 -0.08" joint_parent="LL-3-2_link" joint_child="LL-3-3_link" lower_limit="${-pi/2}" upper_limit="1.51" />
+
+    <xacro:leg_section_link link_name="LL-3-3_link" link_xyz="0 0 -0.06" link_rpy="0 0 ${-pi/2}" model="${arm_path_3}"/>
+
+<!--RIGHT 1-nd-->
+
+
+    <xacro:leg_section_joint joint_name="RL-1-1" joint_axis="0 0 1" joint_xyz="-0.07 -0.158646 0.06" joint_parent="robot_link" joint_child="RL-1-1_link" lower_limit="${-pi/4}" upper_limit="${pi/4}" />
+
+    <xacro:leg_section_link link_name="RL-1-1_link" link_xyz="-0.04 0 -0.04" link_rpy="0 ${(pi/2)} 0" model="${arm_path_1}"/>
+
+    
+
+    <xacro:leg_section_joint joint_name="RL-1-2" joint_axis="0 1 0" joint_xyz="-0.08 0 -0.04" joint_parent="RL-1-1_link" joint_child="RL-1-2_link" lower_limit="0" upper_limit="${pi}" />
+
+    <xacro:leg_section_link link_name="RL-1-2_link" link_xyz="-0.02 0 -0.04" link_rpy="${(pi/6)} 0 ${(pi/2)}" model="${arm_path_2}"/>
+    
+
+
+    <xacro:leg_section_joint joint_name="RL-1-3" joint_axis="0 1 0" joint_xyz="-0.04 0 -0.08" joint_parent="RL-1-2_link" joint_child="RL-1-3_link" lower_limit="-1.51" upper_limit="${pi/2}" />
+
+    <xacro:leg_section_link link_name="RL-1-3_link" link_xyz="0 0 -0.06" link_rpy="0 0 ${pi/2}" model="${arm_path_3}"/>    
+
+
+<!--RIGHT 2-nd-->
+
+
+    <xacro:leg_section_joint joint_name="RL-2-1" joint_axis="0 0 1" joint_xyz="-0.07 -0.01 0.06" joint_parent="robot_link" joint_child="RL-2-1_link" lower_limit="${-pi/4}" upper_limit="${pi/4}" />
+
+    <xacro:leg_section_link link_name="RL-2-1_link" link_xyz="-0.04 0 -0.04" link_rpy="0 ${(pi/2)} 0" model="${arm_path_1}"/>
+
+    
+
+    <xacro:leg_section_joint joint_name="RL-2-2" joint_axis="0 1 0" joint_xyz="-0.08 0 -0.04" joint_parent="RL-2-1_link" joint_child="RL-2-2_link" lower_limit="0" upper_limit="${pi}" />
+
+    <xacro:leg_section_link link_name="RL-2-2_link" link_xyz="-0.02 0 -0.04" link_rpy="${(pi/6)} 0 ${(pi/2)}" model="${arm_path_2}"/>
+    
+
+
+    <xacro:leg_section_joint joint_name="RL-2-3" joint_axis="0 1 0" joint_xyz="-0.04 0 -0.08" joint_parent="RL-2-2_link" joint_child="RL-2-3_link" lower_limit="-1.51" upper_limit="${pi/2}" />
+
+    <xacro:leg_section_link link_name="RL-2-3_link" link_xyz="0 0 -0.06" link_rpy="0 0 ${pi/2}" model="${arm_path_3}"/>    
+
+
+
+<!--RIGHT 3-nd-->
+
+
+    <xacro:leg_section_joint joint_name="RL-3-1" joint_axis="0 0 1" joint_xyz="-0.07 0.158646 0.06" joint_parent="robot_link" joint_child="RL-3-1_link" lower_limit="${-pi/4}" upper_limit="${pi/4}" />
+
+    <xacro:leg_section_link link_name="RL-3-1_link" link_xyz="-0.04 0 -0.04" link_rpy="0 ${(pi/2)} 0" model="${arm_path_1}"/>
+
+    
+
+    <xacro:leg_section_joint joint_name="RL-3-2" joint_axis="0 1 0" joint_xyz="-0.08 0 -0.04" joint_parent="RL-3-1_link" joint_child="RL-3-2_link" lower_limit="0" upper_limit="${pi}" />
+
+    <xacro:leg_section_link link_name="RL-3-2_link" link_xyz="-0.02 0 -0.04" link_rpy="${(pi/6)} 0 ${(pi/2)}" model="${arm_path_2}"/>
+    
+
+
+    <xacro:leg_section_joint joint_name="RL-3-3" joint_axis="0 1 0" joint_xyz="-0.04 0 -0.08" joint_parent="RL-3-2_link" joint_child="RL-3-3_link" lower_limit="-1.51" upper_limit="${pi/2}" />
+
+    <xacro:leg_section_link link_name="RL-3-3_link" link_xyz="0 0 -0.06" link_rpy="0 0 ${pi/2}" model="${arm_path_3}"/>    
+
+
+
+
+
+
+
+    
+</robot>
