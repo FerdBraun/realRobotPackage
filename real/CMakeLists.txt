@@ -33,7 +33,7 @@ if(BUILD_TESTING)
 endif()
 
 install(
- DIRECTORY launch description meshes topics
+ DIRECTORY launch topics
  DESTINATION share/${PROJECT_NAME}
 )
 

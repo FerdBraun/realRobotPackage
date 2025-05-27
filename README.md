@@ -16,73 +16,57 @@ sudo apt-get update
 sudo apt-get install libusb-1.0-0-dev
 ```
 2.
-install libfreekeenect 
-
-sudo make install
-https://github.com/OpenKinect/libfreenect
-
+```
+sudo apt-get install ros-jazzy-depth-image-proc
+sudo apt-get install ros-jazzy-camera-info-manager
+```
 3.
 ```
-sudo apt-get install ros-foxy-depth-image-proc
-sudo apt-get install ros-foxy-camera-info-manager
+sudo apt install ros-jazzy-xacro
+sudo apt install ros-jazzy-controller-manager
+sudo apt install ros-jazzy-ros2-control
+sudo apt install ros-jazzy-ros2-controllers
+sudo apt install ros-jazzy-tf-transformations
 ```
 4.
-```
-sudo apt install ros-foxy-xacro
-sudo apt install ros-foxy-gazebo-ros-pkgs
-sudo apt install ros-foxy-slam-toolbox
-sudo apt install ros-foxy-controller-manager
-sudo apt install ros-foxy-ros2-control
-sudo apt install ros-foxy-ros2-controllers
-sudo apt install ros-foxy-gazebo-ros2-control
-sudo apt install ros-foxy-tf-transformations
-```
-5.
 ```
 sudo pip3 install transforms3d
 pip install pynput
 ```
+5.
+```
+sudo apt install ros-jazzy-twist-mux
+sudo apt install ros-jazzy-nav2-*
+sudo apt install ros-jazzy-rtabmap-*
+sudo apt install ros-jazzy-imu-tools
+```
 6.
 ```
-sudo apt install ros-foxy-twist-mux
-sudo apt install ros-foxy-nav2-*
+sudo apt install ros-jazzy-octomap-server ros-jazzy-octomap-msgs ros-jazzy-octomap-rviz-plugins
+sudo apt install ros-jazzy-joint-state-publisher-gui
 ```
-
 
 RUN
 Main file 
 ```
-ros2 launch my_gazebo gazebo_test.launch.py world:=~/Desktop/ros_dev/src/my_gazebo/world/test_world.world
+ros2 launch real realLife.launch.py 
 ```
-Odometry
+Costmap + NAV
 ```
-ros2 launch lidar_odometry lidar_odom.launch.py
-```
-Costmap
-```
-ros2 launch nav2_bringup navigation_launch.py use_sim_time:=true
-```
-Path and navigations (via publishing point)
-```
-ros2 launch my_gazebo nav2_bringup.launch.py
+ros2 launch real nav2_bringup.launch.py 
 ```
 Moving Nodes (currently for simulations)
 ```
-ros2 launch my_gazebo movement.launch.py
+ros2 launch real movement.launch.py 
 ```
 RVIZ
 ```
-rviz2 -d ~/Desktop/ros_dev/src/my_gazebo/rviz_config/rviz_view.rviz
+ros2 launch real rviz.launch.py 
 ```
 FOR AUTONOMOUS EXPLORATION 
 ```
-ros2 launch my_gazebo explorer.launch.py 
+ros2 launch real explorer.launch.py 
 ```
-
-for real devices run 
-```ros2 launch l3xz_sweep_scanner laser.launch.py``` for lidar
-and
-```ros2 launch kinect_ros2 pointcloud.launch.py``` for kinect
 
 
 
