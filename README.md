@@ -36,44 +36,39 @@ pip install pynput
 5.
 ```
 sudo apt install ros-jazzy-twist-mux
-sudo apt install ros-jazzy-nav2-*
 sudo apt install ros-jazzy-rtabmap-*
 sudo apt install ros-jazzy-imu-tools
 ```
 6.
 ```
 sudo apt install ros-jazzy-octomap-server ros-jazzy-octomap-msgs ros-jazzy-octomap-rviz-plugins
-sudo apt install ros-jazzy-joint-state-publisher-gui
 ```
 
 RUN
-Main file 
+Kinect
 ```
-ros2 launch real realLife.launch.py 
+ros2 launch kinect_ros2 pointcloud.launch.py 
 ```
-Costmap + NAV
+RTABMap
 ```
-ros2 launch real nav2_bringup.launch.py 
+ros2 launch real rmap.launch.py 
 ```
-Moving Nodes (currently for simulations)
+LIDAR
+```
+ros2 launch real lidar.launch.py 
+```
+Moving Nodes (gamepad)
 ```
 ros2 launch real movement.launch.py 
 ```
-RVIZ
+SERVO
 ```
-ros2 launch real rviz.launch.py 
+python3 server.py
 ```
-FOR AUTONOMOUS EXPLORATION 
-```
-ros2 launch real explorer.launch.py 
-```
-
 
 
 
 sourses:
 
 https://github.com/fadlio/kinect_ros2?tab=readme-ov-file
-https://github.com/dawan0111/Simple-2D-LiDAR-Odometry (modified)
-https://github.com/107-systems/l3xz_sweep_scanner (modified)
 
