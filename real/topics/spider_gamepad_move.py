@@ -2,75 +2,103 @@
 import rclpy
 from std_msgs.msg import String
 import evdev
-from evdev import InputDevice, ecodes
+from evdev import InputDevice, ecodes, categorize
 
 class GamepadController:
     def __init__(self):
         self.node = rclpy.create_node('xbox_gamepad_publisher')
         self.publisher = self.node.create_publisher(String, '/spider_robot/command', 10)
-        
-        # Настройки для стика
-        self.stick_deadzone = 10000  # Мертвая зона для предотвращения "дребезга"
-        self.last_stick_command = None
+        self.last_command = None
 
-        # Подключение геймпада
+        # Настройки для Xbox Series Controller
         self.gamepad = self.find_xbox_controller()
         if not self.gamepad:
             self.node.get_logger().error("Xbox controller not found!")
             raise RuntimeError("Gamepad not connected")
+
         self.node.get_logger().info(f"Connected to: {self.gamepad.name}")
 
     def find_xbox_controller(self):
-        """Поиск Xbox контроллера"""
+        """Ищет конкретно Xbox контроллер"""
         devices = [InputDevice(path) for path in evdev.list_devices()]
+        xbox_names = [
+            "Xbox Controller",
+            "X-Box Controller",
+            "Xbox Series",
+            "Microsoft X-Box"
+        ]
+        
         for device in devices:
-            if "Xbox" in device.name or "X-Box" in device.name:
+            self.node.get_logger().info(f"Checking device: {device.name}")
+            if any(name in device.name for name in xbox_names):
+                self.node.get_logger().info("Xbox controller detected!")
                 return device
+        
+        # Если не нашли по имени, попробуем через /dev/input/js0
         try:
-            return InputDevice('/dev/input/js0')  # Fallback
+            js_device = InputDevice('/dev/input/js0')
+            self.node.get_logger().info("Using /dev/input/js0 as fallback")
+            return js_device
         except:
             return None
 
     def process_gamepad_events(self):
         """Основной цикл обработки событий"""
-        self.node.get_logger().info("Listening for controller events...")
+        self.node.get_logger().info("Listening for Xbox controller events...")
         try:
             for event in self.gamepad.read_loop():
                 self.handle_event(event)
-        except Exception as e:
-            self.node.get_logger().error(f"Error: {str(e)}")
+        except OSError as e:
+            self.node.get_logger().error(f"Controller error: {str(e)}")
 
     def handle_event(self, event):
-        """Обработка событий с учетом аналогового стика"""
+        """Обработка событий Xbox контроллера"""
         msg = String()
         command = None
 
-        # Обработка кнопок
+        # Кнопки Xbox Series (проверьте свои коды при необходимости)
         if event.type == ecodes.EV_KEY:
-            if event.code == ecodes.BTN_A and event.value == 1:
-                command = 'F'
-            elif event.code == ecodes.BTN_B and event.value == 1:
-                command = 'B'
-            elif event.code == ecodes.BTN_X and event.value == 1:
-                command = 'L'
-            elif event.code == ecodes.BTN_Y and event.value == 1:
-                command = 'R'
-            elif event.code == ecodes.BTN_START and event.value == 1:
-                command = 'S'
+            if event.code == ecodes.BTN_A and event.value == 1:      # Кнопка A (зеленая)
+                command = 'F'  # Вперед
+            elif event.code == ecodes.BTN_B and event.value == 1:    # Кнопка B (красная)
+                command = 'B'  # Назад
+            elif event.code == ecodes.BTN_X and event.value == 1:    # Кнопка X (синяя)
+                command = 'L'  # Влево
+            elif event.code == ecodes.BTN_Y and event.value == 1:    # Кнопка Y (желтая)
+                command = 'R'  # Вправо
+            elif event.code == ecodes.BTN_START and event.value == 1: # Кнопка Start
+                command = 'S'  # Стоп
 
-        # Обработка аналогового стика (Левый стик)
+        # Обработка крестовины (D-Pad)
         elif event.type == ecodes.EV_ABS:
-            if event.code == ecodes.ABS_X:  # Горизонталь
-                if abs(event.value) > self.stick_deadzone:
-                    command = 'R' if event.value > 0 else 'L'
-            elif event.code == ecodes.ABS_Y:  # Вертикаль
-                if abs(event.value) > self.stick_deadzone:
-                    command = 'F' if event.value < 0 else 'B'  # Инвертируем ось Y
+            if event.code == ecodes.ABS_HAT0X:
+                if event.value == 1:    # Вправо
+                    command = 'R'
+                elif event.value == -1:  # Влево
+                    command = 'L'
+            elif event.code == ecodes.ABS_HAT0Y:
+                if event.value == 1:    # Вниз
+                    command = 'B'
+                elif event.value == -1:  # Вверх
+                    command = 'F'
 
-        # Отправка команды (без проверки на повтор)
+        # Аналоговые стики (если нужно)
+        # elif event.type == ecodes.EV_ABS:
+        #     if event.code == ecodes.ABS_X:  # Левый стик X
+        #         if event.value > 20000:
+        #             command = 'R'
+        #         elif event.value < -20000:
+        #             command = 'L'
+        #     elif event.code == ecodes.ABS_Y:  # Левый стик Y
+        #         if event.value > 20000:
+        #             command = 'B'
+        #         elif event.value < -20000:
+        #             command = 'F'
+
         if command:
             msg.data = command
             self.publisher.publish(msg)
+            self.last_command = command
             self.node.get_logger().info(f'Command: {command}')
 
 def main(args=None):
@@ -78,10 +106,11 @@ def main(args=None):
     try:
         controller = GamepadController()
         controller.process_gamepad_events()
-    except KeyboardInterrupt:
-        pass
+    except Exception as e:
+        controller.node.get_logger().error(f"Error: {str(e)}")
     finally:
-        controller.node.destroy_node()
+        if 'controller' in locals():
+            controller.node.destroy_node()
         rclpy.shutdown()
 
 if __name__ == '__main__':
