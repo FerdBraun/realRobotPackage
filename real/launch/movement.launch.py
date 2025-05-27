@@ -16,7 +16,7 @@ def generate_launch_description():
     pkg_name = 'real'
  
 
-    command_sender_script = os.path.join(get_package_share_directory(pkg_name), 'topics/spider_robot_command_sender.py')
+    command_sender_script = os.path.join(get_package_share_directory(pkg_name), 'topics/spider_gamepad_move.py')
 
     command_sender = Node(executable=command_sender_script,
             name='command_sender',

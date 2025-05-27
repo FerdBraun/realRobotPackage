@@ -33,13 +33,13 @@ def generate_launch_description():
                 namespace="kinect",
                 parameters=[{'use_sim_time': False}],
             ),
-            Node(
-                package="rviz2",
-                executable="rviz2",
-                name="rviz2",
-                output="screen",
-                arguments=["-d", LaunchConfiguration("rvizconfig")],
-            ),
+            #Node(
+            #    package="rviz2",
+            #    executable="rviz2",
+            #    name="rviz2",
+            #    output="screen",
+            #    arguments=["-d", LaunchConfiguration("rvizconfig")],
+            #),
             Node(
                 package='tf2_ros',
                 executable='static_transform_publisher',

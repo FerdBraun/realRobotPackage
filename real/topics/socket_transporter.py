@@ -16,7 +16,7 @@ class SpiderRobotCommandNode(Node):
             '/spider_robot/command',
             self.listener_callback,
             10)
-        self.websocket_uri = "ws://10.147.19.226:8765"
+        self.websocket_uri = "ws://localhost:8765"
         self.current_task = None
         self.loop = asyncio.new_event_loop()  # Создаем новый event loop
         self.thread = threading.Thread(target=self.start_loop, daemon=True)
@@ -38,7 +38,7 @@ class SpiderRobotCommandNode(Node):
 
     def listener_callback(self, msg):
         cmd = msg.data.strip().upper()
-        valid_commands = ['F', 'L', 'R', 'S']
+        valid_commands = ['F', 'L', 'R', 'B']
         
         if cmd in valid_commands:
             self.get_logger().info(f"Received valid command: {cmd}")
