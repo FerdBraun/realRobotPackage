@@ -8,6 +8,7 @@ class GamepadController:
     def __init__(self):
         self.node = rclpy.create_node('xbox_gamepad_publisher')
         self.publisher = self.node.create_publisher(String, '/spider_robot/command', 10)
+        self.publisherBool = node.create_publisher(Bool, '/stop_planning', 10)
         self.last_command = None
 
         # Настройки для Xbox Series Controller
@@ -59,15 +60,15 @@ class GamepadController:
         # Кнопки Xbox Series (проверьте свои коды при необходимости)
         if event.type == ecodes.EV_KEY:
             if event.code == ecodes.BTN_A and event.value == 1:      # Кнопка A (зеленая)
-                command = 'F'  # Вперед
+                command = 'START'  # Вперед
             elif event.code == ecodes.BTN_B and event.value == 1:    # Кнопка B (красная)
-                command = 'B'  # Назад
+                command = 'STOP'  # Назад
             elif event.code == ecodes.BTN_X and event.value == 1:    # Кнопка X (синяя)
-                command = 'L'  # Влево
+                #command = 'L'  # Влево
             elif event.code == ecodes.BTN_Y and event.value == 1:    # Кнопка Y (желтая)
-                command = 'R'  # Вправо
+                #command = 'R'  # Вправо
             elif event.code == ecodes.BTN_START and event.value == 1: # Кнопка Start
-                command = 'S'  # Стоп
+                #command = 'S'  # Стоп
 
         # Обработка крестовины (D-Pad)
         elif event.type == ecodes.EV_ABS:
@@ -96,10 +97,21 @@ class GamepadController:
         #             command = 'F'
 
         if command:
-            msg.data = command
-            self.publisher.publish(msg)
-            self.last_command = command
-            self.node.get_logger().info(f'Command: {command}')
+            if command == 'START':
+                msg = Bool()
+                msg.data = False
+                self.publisherBool.publish(msg)
+                self.node.get_logger().info(f'Command: {command}')
+            elif command == 'STOP':
+                msg = Bool()
+                msg.data = True
+                self.publisherBool.publish(msg)
+                self.node.get_logger().info(f'Command: {command}')
+            else:
+                msg.data = command
+                self.publisher.publish(msg)
+                self.last_command = command
+                self.node.get_logger().info(f'Command: {command}')
 
 def main(args=None):
     rclpy.init(args=args)
