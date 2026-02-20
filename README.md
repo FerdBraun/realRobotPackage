@@ -1,4 +1,4 @@
-1. Install ROS2 (foxy for 20.04) or other ([Video guide](https://www.youtube.com/watch?v=uWzOk0nkTcI))
+1. Install ROS2 JAZZY([Video guide fox foxy](https://www.youtube.com/watch?v=uWzOk0nkTcI))
 2. Create a folder "ros_dev" for excample
 3. make an ```src``` dir in it
 5. Build an empty workspace by running ```colcon build --symlink-install``` while in ```ros_dev``` dir
